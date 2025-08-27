@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GenX Tools — Quotes • Jokes • Usernames</title>
+    <meta name="description"
+        content="A clean one‑page web app that generates quotes, jokes, and usernames. No ads. No backend. Works offline.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0c0f16;
+            --surface: #121826;
+            --elev: #0e1321;
+            --text: #eaf0ff;
+            --muted: #8a93ad;
+            --brand: #7aa2ff;
+            --brand2: #b38cff;
+            --ring: 0 0 0 3px rgba(122, 162, 255, .35);
+            --shadow: 0 12px 40px rgba(0, 0, 0, .35);
+        }
+
+        [data-theme="light"] {
+            --bg: #f6f7fb;
+            --surface: #ffffff;
+            --elev: #f3f5fb;
+            --text: #0d1324;
+            --muted: #5b6380;
+            --brand: #3b82f6;
+            --brand2: #7c3aed;
+            --ring: 0 0 0 3px rgba(59, 130, 246, .25);
+            --shadow: 0 12px 30px rgba(16, 24, 40, .08);
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+            background: radial-gradient(1200px 800px at 120% -20%, #1a2440, transparent), radial-gradient(800px 600px at -10% 10%, #261a40, transparent), var(--bg);
+            color: var(--text);
+        }
+
+        .wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 28px
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 16px
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px
+        }
+
+        .badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--brand), var(--brand2));
+            display: grid;
+            place-items: center;
+            color: white;
+            font-weight: 800;
+            box-shadow: var(--shadow)
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(22px, 4vw, 36px)
+        }
+
+        .sub {
+            color: var(--muted);
+            margin-top: 6px;
+            font-size: 14px
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .toggle {
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, .08);
+            background: var(--elev);
+            padding: 10px 12px;
+            border-radius: 12px;
+            color: var(--muted)
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.1fr .9fr;
+            gap: 18px
+        }
+
+        @media (max-width:900px) {
+            .grid {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, .02), rgba(255, 255, 255, 0));
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: 18px;
+            padding: 16px;
+            box-shadow: var(--shadow)
+        }
+
+        .card h2 {
+            margin: 6px 0 12px;
+            font-size: 18px
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin: 10px 0 6px
+        }
+
+        input,
+        select,
+        textarea,
+        button {
+            width: 100%;
+            font: inherit;
+            color: var(--text);
+            background: var(--elev);
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: 12px;
+            padding: 12px
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus,
+        button:focus {
+            outline: none;
+            box-shadow: var(--ring)
+        }
+
+        button {
+            cursor: pointer
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 8px
+        }
+
+        .tab {
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: transparent;
+            color: var(--muted)
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, var(--brand), var(--brand2));
+            color: white;
+            border-color: transparent;
+            font-weight: 800
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--brand), var(--brand2));
+            border: none;
+            font-weight: 800
+        }
+
+        .btn-ghost {
+            background: transparent
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--elev);
+            border: 1px solid rgba(255, 255, 255, .08);
+            padding: 8px 12px;
+            border-radius: 999px;
+            color: var(--muted);
+            font-size: 13px
+        }
+
+        .results {
+            display: grid;
+            gap: 12px;
+            margin-top: 12px
+        }
+
+        .result {
+            position: relative;
+            background: var(--elev);
+            border: 1px solid rgba(255, 255, 255, .08);
+            padding: 14px;
+            border-radius: 14px
+        }
+
+        .mini-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 8px
+        }
+
+        .muted {
+            color: var(--muted)
+        }
+
+        .footer {
+            margin: 24px 0 10px;
+            color: var(--muted);
+            font-size: 12px
+        }
+
+        .tag {
+            display: inline-block;
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .08);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            margin-right: 6px
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap" id="app">
+        <header>
+            <div class="logo">
+                <div class="badge">GX</div>
+                <div>
+                    <h1>GenX Tools</h1>
+                    <div class="sub">One‑page generator hub — <b>Quotes</b>, <b>Jokes</b>, <b>Usernames</b>. </div>
+                </div>
+            </div>
+            <div class="controls">
+                <button id="themeBtn" class="toggle" title="Toggle theme">🌙 Dark</button>
+            </div>
+        </header>
+
+        <div class="grid">
+            <!-- LEFT: Controls -->
+            <section class="card">
+                <h2>Pick a Generator</h2>
+                <div class="tabs" id="tabs">
+                    <button class="tab active" data-tab="quotes">Quotes</button>
+                    <button class="tab" data-tab="jokes">Jokes</button>
+                    <button class="tab" data-tab="usernames">Usernames</button>
+                </div>
+
+                <div id="panel-quotes" class="panel">
+                    <label for="qTopic">Topic / vibe (optional)</label>
+                    <input id="qTopic" placeholder="e.g., growth mindset" />
+                    <div style="display:flex;gap:10px;margin-top:10px">
+                        <div style="flex:1">
+                            <label for="qCount">How many?</label>
+                            <input id="qCount" type="number" min="1" max="20" value="5" />
+                        </div>
+                        <div style="flex:1">
+                            <label for="qLength">Length</label>
+                            <select id="qLength">
+                                <option value="short" selected>Short</option>
+                                <option value="medium">Medium</option>
+                                <option value="long">Long</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button id="qGen" class="btn-primary">⚡ Generate Quotes</button>
+                        <span class="pill">Tip: Keep topics simple for cleaner lines.</span>
+                    </div>
+                </div>
+
+                <div id="panel-jokes" class="panel" style="display:none">
+                    <label for="jTopic">Topic (optional)</label>
+                    <input id="jTopic" placeholder="e.g., tech, school, cats" />
+                    <div style="display:flex;gap:10px;margin-top:10px">
+                        <div style="flex:1">
+                            <label for="jCount">How many?</label>
+                            <input id="jCount" type="number" min="1" max="20" value="5" />
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button id="jGen" class="btn-primary">😂 Generate Jokes</button>
+                        <span class="pill">One‑liners only. Keep it clean.</span>
+                    </div>
+                </div>
+
+                <div id="panel-usernames" class="panel" style="display:none">
+                    <label for="uTopic">Theme / base word</label>
+                    <input id="uTopic" placeholder="e.g., Vortex, Pixel, Ninja" />
+                    <div style="display:flex;gap:10px;margin-top:10px">
+                        <div style="flex:1">
+                            <label for="uCount">How many?</label>
+                            <input id="uCount" type="number" min="1" max="20" value="10" />
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button id="uGen" class="btn-primary">🎮 Generate Usernames</button>
+                        <span class="pill">Auto adds numbers/suffixes for uniqueness.</span>
+                    </div>
+                </div>
+
+                <div id="status" class="muted" style="margin-top:10px"></div>
+            </section>
+
+            <!-- RIGHT: Results -->
+            <section class="card">
+                <h2>Results</h2>
+                <div id="results" class="results"></div>
+            </section>
+        </div>
+
+        <p class="footer">
+            <span class="tag">One file deploy</span>
+            <span class="tag">Mobile‑first</span>
+            <span class="tag">Works offline</span>
+            <span class="tag">No cookies</span>
+        </p>
+    </div>
+
+    <script>
+        // ===== Utils =====
+        const $ = (q) => document.querySelector(q);
+        const statusEl = $('#status');
+        const resultsEl = $('#results');
+        const app = document.getElementById('app');
+
+        function setStatus(msg = '') { statusEl.textContent = msg; }
+        function escapeHtml(str) { return str.replace(/[&<>\"]/g, s => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[s])); }
+        function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+
+        function addResult(text) {
+            const div = document.createElement('div');
+            div.className = 'result';
+            div.innerHTML = `<div class="mini-actions">
+          <button class="btn-ghost" data-copy>Copy</button>
+        </div>
+        <div>${escapeHtml(text).replace(/\n/g, '<br>')}</div>`;
+            div.querySelector('[data-copy]').addEventListener('click', () => {
+                navigator.clipboard.writeText(text);
+                setStatus('Copied ✅');
+                setTimeout(() => setStatus(''), 1200);
+            });
+            resultsEl.prepend(div);
+        }
+
+        // ===== Theme Toggle =====
+        const themeBtn = document.getElementById('themeBtn');
+        const THEME_KEY = 'genx_theme';
+        function applyTheme(mode) {
+            if (mode === 'light') { document.documentElement.setAttribute('data-theme', 'light'); themeBtn.textContent = '☀️ Light'; }
+            else { document.documentElement.removeAttribute('data-theme'); themeBtn.textContent = '🌙 Dark'; }
+        }
+        const savedTheme = localStorage.getItem(THEME_KEY) || 'dark';
+        applyTheme(savedTheme);
+        themeBtn.addEventListener('click', () => {
+            const now = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            localStorage.setItem(THEME_KEY, now);
+            applyTheme(now);
+        });
+
+        // ===== Tabs =====
+        const tabs = document.getElementById('tabs');
+        tabs.addEventListener('click', (e) => {
+            const btn = e.target.closest('.tab');
+            if (!btn) return;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            const id = btn.dataset.tab;
+            document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+            document.getElementById('panel-' + id).style.display = 'block';
+            setStatus('');
+            resultsEl.innerHTML = '';
+        });
+
+        // ===== Offline Generators =====
+        const words = {
+            virtues: ['courage', 'discipline', 'focus', 'patience', 'kindness', 'curiosity', 'grit', 'optimism', 'gratitude', 'consistency', 'belief', 'humility', 'practice'],
+            actions: ['start', 'build', 'learn', 'practice', 'commit', 'show up', 'embrace', 'ship', 'improve', 'keep going', 'fail forward', 'iterate', 'breathe'],
+            jokesSetup: ['Why did the', 'How come the', 'What happens when a', 'My friend said the', 'I asked a'],
+            jokesSubject: ['developer', 'cat', 'robot', 'math book', 'banana', 'teacher', 'gamer', 'wifi router', 'AI', 'sneaker'],
+            jokesTwist: ['needed a break', 'was nervous', 'felt lonely', 'crashed', 'couldn\'t focus', 'got grounded', 'was buffering', 'ran out of memory'],
+            gamerBase: ['Xeno', 'Vortex', 'Nova', 'Shadow', 'Glitch', 'Pixel', 'Echo', 'Rogue', 'Frost', 'Volt', 'Astra', 'Nyx', 'Drift', 'Blitz', 'Ninja', 'Atom', 'Spectre'],
+            suffix: ['ify', 'X', 'HQ', 'Pro', 'Lite', 'Prime', 'Ops', 'Verse', 'Zone', 'Edge', 'Core', 'Wave', 'Lab', 'Flex', 'Axis']
+        };
+        const rand = a => a[Math.floor(Math.random() * a.length)];
+
+        function genQuote(topic, length) {
+            const t = topic?.trim();
+            const piece = `${rand(['Your', 'Real', 'True', 'Daily', 'Quiet'])} power is ${rand(['in', 'built by', 'shaped by', 'unlocked through'])} ${t || rand(words.virtues)}—${rand(['keep showing up.', 'small steps compound.', 'trust the process.', 'make it a habit.'])}`;
+            if (length === 'long') return piece + ` ${rand(['One focused hour beats ten distracted ones.', 'Dreams don\'t work unless you do.', 'Consistency turns effort into identity.'])}`;
+            if (length === 'medium') return piece;
+            return piece.split('—')[0] + '.';
+        }
+        function genJoke(topic) {
+            const s = rand(words.jokesSetup);
+            const subj = topic?.trim() || rand(words.jokesSubject);
+            const twist = rand(words.jokesTwist);
+            return `${s} ${subj} ${rand(['crossed the road', 'went to school', 'opened a laptop', 'joined a server'])}? Because it ${twist}.`;
+        }
+        function genUsername(topic) {
+            const base = (topic?.trim() || rand(words.gamerBase)).replace(/\s+/g, '');
+            return `${base}${Math.random() < .6 ? rand(words.suffix) : ''}${Math.floor(10 + Math.random() * 89)}`;
+        }
+
+        // ===== Wire Up Buttons =====
+        document.getElementById('qGen').addEventListener('click', () => {
+            resultsEl.innerHTML = '';
+            const n = clamp(parseInt(document.getElementById('qCount').value || '1', 10), 1, 20);
+            const topic = document.getElementById('qTopic').value;
+            const len = document.getElementById('qLength').value;
+            for (let i = 0; i < n; i++) addResult(genQuote(topic, len));
+            setStatus(`Added ${n} quote(s).`);
+        });
+
+        document.getElementById('jGen').addEventListener('click', () => {
+            resultsEl.innerHTML = '';
+            const n = clamp(parseInt(document.getElementById('jCount').value || '1', 10), 1, 20);
+            const topic = document.getElementById('jTopic').value;
+            for (let i = 0; i < n; i++) addResult(genJoke(topic));
+            setStatus(`Added ${n} joke(s).`);
+        });
+
+        document.getElementById('uGen').addEventListener('click', () => {
+            resultsEl.innerHTML = '';
+            const n = clamp(parseInt(document.getElementById('uCount').value || '1', 10), 1, 20);
+            const topic = document.getElementById('uTopic').value;
+            for (let i = 0; i < n; i++) addResult(genUsername(topic));
+            setStatus(`Added ${n} username(s).`);
+        });
+
+        // Default state
+        setStatus('Ready. Pick a generator and hit the button.');
+    </script>
+</body>
+
+</html>
